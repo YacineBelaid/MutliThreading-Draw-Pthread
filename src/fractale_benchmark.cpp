@@ -46,7 +46,7 @@ int main() {
     uint64_t power = static_cast<double>(std::pow(2, static_cast<double>(i)));
     std::cout << "***** Puissance : " << power << " *****" << std::endl;
 
-    for ( double numThreads = 2; numThreads < maxThreads; numThreads = std::pow(numThreads, 2)) {
+    for ( double numThreads = 2; numThreads <= maxThreads; numThreads = std::pow(numThreads, 2)) {
       std::cout << "  -- Thread : " << numThreads << " --" << std::endl;
       double serialTotalTime = 0.0;
       double parallelTotalTime = 0.0;
@@ -90,7 +90,7 @@ int main() {
   
   FREE(couleur_test);
 
-  std::ofstream outputFile("benchmark.csv");
+  std::ofstream outputFile("benchmark2.csv");
   if (outputFile.is_open()) {
     outputFile << "Puissance :: Nombre de Thread :: Duree Serie :: Duree Parallele" << std::endl;
 
