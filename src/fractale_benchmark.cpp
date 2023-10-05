@@ -51,7 +51,6 @@ int main() {
       std::cout << "  -- Thread : " << numThreads << " --" << std::endl;
       double serialTotalTime = 0;
       double parallelTotalTime = 0;
-      double acceleration = 0;
 
        for (int j = 0; j < occurrence; j++) {
         char** canvas_test_1 = (char**)malloc(sizeof(char*)*power);
