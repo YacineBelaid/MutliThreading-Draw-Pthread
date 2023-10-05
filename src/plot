@@ -1,0 +1,12 @@
+#!/usr/bin/env gnuplot
+
+set terminal pdf enhanced color size 12cm,6cm
+
+set output "graph.pdf"
+set title "Running time with different number of threads"
+set logscale
+unset key
+set xlabel "number of thread"
+set ylabel "Running time (ns)"
+
+plot 'benchmark.csv' using 1:2 with linespoints lw 2 lt 1
