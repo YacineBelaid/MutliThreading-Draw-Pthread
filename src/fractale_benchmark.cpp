@@ -1,8 +1,10 @@
 #include <draw_parallel.h>
 #include <draw_serial.h>
 
+#include <iostream>
+#include <fstream>
 #include <chrono>
-#include <cmath>  // Ajout de cette inclusion pour utiliser std::pow
+#include <cmath> 
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -18,6 +20,15 @@ int main() {
    * Utilisez ces données dans votre rapport.
    */
 
+  struct BenchmarkData {
+    uint64_t power;
+    int numThreads;
+    double serialDuration;
+    double parallelDuration;
+  };
+
+  std::vector<BenchmarkData> benchmarkResults;
+
   int ret = 0;
   int maxThreads = std::thread::hardware_concurrency();
   int occurrence = 10;
@@ -32,8 +43,7 @@ int main() {
 
   for (int i :powers) {
     
-    // Calcul de la taille du dessin en fonction de la puissance
-    uint64_t power = static_cast<double>(std::pow(width*height, static_cast<double>(i)));
+    uint64_t power = static_cast<double>(std::pow(2, static_cast<double>(i)));
     std::cout << "***** Puissance : " << power << " *****" << std::endl;
 
     for ( double numThreads = 2; numThreads < maxThreads; numThreads = std::pow(numThreads, 2)) {
@@ -57,7 +67,6 @@ int main() {
         double parallelDuration = std::chrono::duration_cast<std::chrono::milliseconds>(parallelEndTime - parallelStartTime).count();
         parallelTotalTime += parallelDuration;
 
-        // Libérer la mémoire
         if (canvas_test_1 != NULL)
           FREE(canvas_test_1);
           
@@ -69,12 +78,36 @@ int main() {
       double avgParallelTime = parallelTotalTime / occurrence;
       std::cout << "    Série (ms) : " << avgSerialTime << std::endl;
       std::cout << "    Parallèle (ms) : " << avgParallelTime << std::endl;
+
+      BenchmarkData data;
+      data.power = power;
+      data.numThreads = numThreads;
+      data.serialDuration = avgSerialTime;
+      data.parallelDuration = avgParallelTime;
+      benchmarkResults.push_back(data);
     }
   }
+  
+  FREE(couleur_test);
 
-err:
-  return -1;
-done:
-  return ret;
+  std::ofstream outputFile("benchmark.csv");
+  if (outputFile.is_open()) {
+    outputFile << "Puissance :: Nombre de Thread :: Duree Serie :: Duree Parallele" << std::endl;
+
+    for (const BenchmarkData& result : benchmarkResults) {
+        outputFile << result.power << " :: " << result.numThreads << " :: "
+                    << result.serialDuration << " :: " << result.parallelDuration << std::endl;
+    }
+    outputFile.close();
+  } else {
+    std::cerr << "Impossible d'ouvrir le fichier benchmark.csv pour écriture." << std::endl;
+    goto err;
+  }
+
+  done:
+    return ret;
+  err:
+    ret = -1;
+    goto done;
 }
 
