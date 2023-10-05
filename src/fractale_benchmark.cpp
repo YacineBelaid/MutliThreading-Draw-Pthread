@@ -36,7 +36,7 @@ int main() {
     uint64_t power = static_cast<double>(std::pow(width*height, static_cast<double>(i)));
     std::cout << "***** Puissance : " << power << " *****" << std::endl;
 
-    for ( double numThreads = 1; numThreads < maxThreads; numThreads = std::pow(numThreads, 2)) {
+    for ( double numThreads = 2; numThreads < maxThreads; numThreads = std::pow(numThreads, 2)) {
       std::cout << "  -- Thread : " << numThreads << " --" << std::endl;
       double serialTotalTime = 0.0;
       double parallelTotalTime = 0.0;
