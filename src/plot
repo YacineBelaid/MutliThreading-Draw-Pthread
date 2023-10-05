@@ -3,10 +3,10 @@
 set terminal pdf enhanced color size 12cm,6cm
 
 set output "graph.pdf"
-set title "Running time with different number of threads"
+set title "Running time with different Power"
 set logscale
 unset key
-set xlabel "number of thread"
-set ylabel "Running time (ns)"
+set xlabel "Power"
+set ylabel "Acceleration (ns)"
 
-plot 'benchmark.csv' using 1:2 with linespoints lw 2 lt 1
+plot 'benchmark.csv' using 5:1 with linespoints lw 2 lt 1

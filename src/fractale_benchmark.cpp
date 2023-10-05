@@ -25,6 +25,7 @@ int main() {
     int numThreads;
     double serialDuration;
     double parallelDuration;
+    double acceleration;
   };
 
   std::vector<BenchmarkData> benchmarkResults;
@@ -48,8 +49,9 @@ int main() {
 
     for ( double numThreads = 2; numThreads <= maxThreads; numThreads = std::pow(numThreads, 2)) {
       std::cout << "  -- Thread : " << numThreads << " --" << std::endl;
-      double serialTotalTime = 0.0;
-      double parallelTotalTime = 0.0;
+      double serialTotalTime = 0;
+      double parallelTotalTime = 0;
+      double acceleration = 0;
 
        for (int j = 0; j < occurrence; j++) {
         char** canvas_test_1 = (char**)malloc(sizeof(char*)*power);
@@ -76,6 +78,8 @@ int main() {
       }
       double avgSerialTime = serialTotalTime / occurrence;
       double avgParallelTime = parallelTotalTime / occurrence;
+      double acceleration = avgSerialTime - avgParallelTime;
+      if (acceleration < 0) acceleration = 0;
       std::cout << "    Série (ms) : " << avgSerialTime << std::endl;
       std::cout << "    Parallèle (ms) : " << avgParallelTime << std::endl;
 
@@ -84,6 +88,7 @@ int main() {
       data.numThreads = numThreads;
       data.serialDuration = avgSerialTime;
       data.parallelDuration = avgParallelTime;
+      data.acceleration = acceleration;
       benchmarkResults.push_back(data);
     }
   }
@@ -92,11 +97,12 @@ int main() {
 
   std::ofstream outputFile("benchmark2.csv");
   if (outputFile.is_open()) {
-    outputFile << "Puissance :: Nombre de Thread :: Duree Serie :: Duree Parallele" << std::endl;
+    outputFile << "Puissance, Nombre de Thread, Duree Serie, Duree Parallele, " << std::endl;
 
     for (const BenchmarkData& result : benchmarkResults) {
-        outputFile << result.power << " :: " << result.numThreads << " :: "
-                    << result.serialDuration << " :: " << result.parallelDuration << std::endl;
+        outputFile << result.power << ", " << result.numThreads << ", "
+                    << result.serialDuration << ", " << result.parallelDuration << ", "
+                    << result.acceleration << std::endl;
     }
     outputFile.close();
   } else {
