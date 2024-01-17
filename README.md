@@ -1,4 +1,4 @@
-Fractale du dragon
+Parrallel drawing using Multi-threading strategy using PThread
 ==================
 
 ## Dépendances
@@ -15,3 +15,4 @@ Fedora:
   yum gcc gcc-c++ automake glibc-devel
 ```
 
+Yacine Belaid
